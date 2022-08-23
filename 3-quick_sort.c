@@ -6,10 +6,11 @@
  * @array: pointer to first element in array
  * @low: first element in partition
  * @high: last element in partition
+ * @size: size of array
  * Return: index value of the next pivot
  */
 
-int partition(int *array, int low, int high)
+int partition(int *array, int low, int high, size_t size)
 {
 	int pivot = array[high];
 	int i = low - 1;
@@ -20,16 +21,22 @@ int partition(int *array, int low, int high)
 		if (array[j] <= pivot)
 		{
 			i++;
-			temp = array[i];
-			array[i] = array[j];
-			array[j] = temp;
+			if (i != j)
+			{
+				temp = array[i];
+				array[i] = array[j];
+				array[j] = temp;
+				print_array(array, size);
+			}
 		}
 	}
-
-	temp = array[i + 1];
-	array[i + 1] = array[high];
-	array[high] = temp;
-
+	if (array[high] < array[i + 1])
+	{
+		temp = array[i + 1];
+		array[i + 1] = array[high];
+		array[high] = temp;
+		print_array(array, size);
+	}
 	return (i + 1);
 }
 
@@ -49,13 +56,12 @@ void _quick_sort(int *array, int low, int high, size_t size)
 
 	if (low < high)
 	{
-		pivot = partition(array, low, high);
+		pivot = partition(array, low, high, size);
 
 		_quick_sort(array, low, pivot - 1, size);
 
 		_quick_sort(array, pivot + 1, high, size);
 	}
-	print_array(array, size);
 }
 
 /**
@@ -68,5 +74,8 @@ void _quick_sort(int *array, int low, int high, size_t size)
 
 void quick_sort(int *array, size_t size)
 {
-	_quick_sort(array, 0, size - 1, size);
+	if (size < 2)
+		return;
+	if (array && size)
+		_quick_sort(array, 0, size - 1, size);
 }
